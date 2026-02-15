@@ -1,0 +1,64 @@
+# this file looks at deseasonalize and detrending
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.stattools import grangercausalitytests
+from statsmodels.tsa.seasonal import seasonal_decompose
+from google.colab import files
+import io
+
+# ==============================
+# 1. Upload & Date Parsing
+# ==============================
+uploaded = files.upload()
+csv_file = list(uploaded.keys())[0]
+df_raw = pd.read_csv(io.BytesIO(uploaded[csv_file]), header=0)
+
+# ==============================
+# 2. Preprocessing & Formatting
+# ==============================
+df = df_raw[['year-month', 'tws_40_mm', 'rain_mm']].copy()
+df.columns = ['month_raw', 'tws', 'rain']
+
+# Convert to datetime and set index for decomposition
+df['month_raw'] = pd.to_datetime(df['month_raw'])
+df.set_index('month_raw', inplace=True)
+
+# ==============================
+# 3. Deseasonalize and Detrend
+# ==============================
+def preprocess_series(series, title):
+    # Additive decomposition (works well for mm measurements)
+    # period=12 for monthly data
+    result = seasonal_decompose(series, model='additive', period=12)
+
+    # Residuals represent the data with Trend and Seasonality removed
+    # We drop NaNs created by the moving average in the decomposition
+    detrended_deseasoned = result.resid.dropna()
+    return detrended_deseasoned
+
+df_clean = pd.DataFrame({
+    'tws_processed': preprocess_series(df['tws'], 'TWS'),
+    'rain_processed': preprocess_series(df['rain'], 'Rain')
+}).dropna()
+
+# ==============================
+# 4. Granger Causality Test
+# ==============================
+# Testing if TWS (column 0) impacts Rain (column 1)
+# The function expects: [dependent variable, independent variable]
+test_data = df_clean[['rain_processed', 'tws_processed']]
+
+print("\n--- Granger Causality Test: Does TWS impact Rain? ---")
+results = grangercausalitytests(test_data, maxlag=12, verbose=True)
+
+# ==============================
+# 5. Visualization
+# ==============================
+plt.figure(figsize=(12, 6))
+plt.plot(df_clean.index, df_clean['tws_processed'], label='Processed TWS (Stationary)')
+plt.plot(df_clean.index, df_clean['rain_processed'], label='Processed Rain (Stationary)', alpha=0.7)
+plt.title('Stationary Time Series (Deseasonalized & Detrended)')
+plt.legend()
+plt.show()
