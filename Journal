@@ -1,0 +1,23 @@
+Mar 7 2026
+
+This week James Watson noted he wasnt convinced about Granger causality yet. Did I test it out all properly. 
+That got me to think about testing it with a toy example, where I generate data where its only on way causal, so rain comes down,
+and sinks into soil, but it does not go back up again. Using this datafile I then did a granger causality test on it.
+It actually did find a significant fstat at time lag 1 month, when it should not have. This suggested that there is a rain persistence
+effect, where the soil water still looks like it is predicting the rain.
+
+I also noticed that I found there depending on how I processed data - detrend or difference it seemed like it might shift when the 
+tws >1m water affected the rain. It looked like with detrending it was a 1 month lag, while differencing led to 2 month lag peak.
+This 1 month peak is possibly problematical because the one way causal toy data suggested that some 1 month peaks could be spurious.
+
+So this led me to think more about using the tws-smap data, as that for many places had a 2 month lag. 
+
+On looking more at this tws-smap data, where I looked at MJJ (May,June,July) and ASO months differently. It said that for MJJ it had
+2 month and 3 month lags. This would suggest that in March and April the tws was already going to impact the MJJ months. So this
+suggests that there may be a priming, tws could be bringing in the onset of rain. For the retreating ASO months there was also 2 and 
+3 month lag, which suggests that the tws could be extending the wet season. 
+
+When I looked at the soil moisture 5cm it showed that it was having a 1 month lag for impacting MJJ and ASO months. However when I then 
+did a shuffle test, where I shuffled the month (say october) with month (october from another year) from another year, then it disappeared.
+And also shuffling chunks of 3 months. So it was a spurios effect. However the tws >1m -> rain still was real, it survived the two
+types of shuffle tests.
