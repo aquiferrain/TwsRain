@@ -21,3 +21,33 @@ When I looked at the soil moisture 5cm it showed that it was having a 1 month la
 did a shuffle test, where I shuffled the month (say october) with month (october from another year) from another year, then it disappeared.
 And also shuffling chunks of 3 months. So it was a spurios effect. However the tws >1m -> rain still was real, it survived the two
 types of shuffle tests.
+
+Mar 20
+I had to do a paper for my stats final on a paper that used something we learnt in class. So I looked at Findell and Eltahir 1997 paper on how soil moisture 
+affects rain in Illinois. They looked at the soil moisture on one day, and saw if it correlated with rain for the next 21 days. And then plotted 
+that soil moisture vs rain, and looked to see if it had a pattern. They did linear regression and saw a fit. 
+
+So that got me to thinking I could use linear regression to look at tws on rain. I tried the feb tws to see how it affected the rain the next year from mar to feb 
+in places in Sahel. At first I thought I saw a positive correlation. But then I took into account that the tws started trending up in 2018. If I just did
+the year up to 2017 I saw rather an negative correlation in many places, as tws went down in feb, the rain for the upcoming year went up. 
+
+I also looked at whether tws one month could predict the next month rain, it seemed it could, and sometimes not just one, but sometimes two and three.
+
+I decided to look at a cell centered in Illinois. I used tws in feb to see if it predict rain next year. It borderline does r=.43, p=.055. The rain from previous year 
+also could with r=..14, p=.055 . But problem is here there is a lot of pumping. I also saw that the previous months tws could predict future months of rain. 
+In apr and may is when there is less pumping. So Apr tws can affect may and june rain, and not so strongly july. Impact is more than the rain. 
+
+[April TWS INFLUENCE]
+-----------------------------------------------------------------
+Predictor Target Rain      R    R^2  P-val  Slope
+April TWS         May 0.6471 0.4188 0.0027  0.535
+April TWS        June 0.4600 0.2116 0.0475  0.547
+April TWS        July 0.3026 0.0916 0.2079  0.245
+-----------------------------------------------------------------
+
+[April Rain INFLUENCE]
+-----------------------------------------------------------------
+ Predictor Target Rain       R    R^2  P-val  Slope
+April Rain         May  0.3716 0.1381 0.0886  0.442
+April Rain        June -0.0230 0.0005 0.9190 -0.039
+April Rain        July -0.1917 0.0368 0.3927 -0.257
